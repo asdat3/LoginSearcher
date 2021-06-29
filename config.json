@@ -1,3 +1,13 @@
 {
-    "input_file":"input.txt"
+    "input_file":"input.txt",
+    "keywordsearch":true,
+    "keywordlist":["password","pw","login","admin","username"],
+    "logging+":true,
+    "uregex":{
+        "active":true,
+        "min_letters":2,
+        "max_letters":16,
+        "use_dictonary":true,
+        "passwordregex":true
+    }
 }
