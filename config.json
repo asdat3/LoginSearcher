@@ -16,5 +16,5 @@
         "discord_format":true,
         "interesting_lines":3
     },
-    "artifical_delay":0.3
+    "artifical_delay":0
 }

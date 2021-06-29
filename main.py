@@ -1,5 +1,6 @@
-import re, time, datetime, json,os
+import re, time, datetime, json, os, codecs
 from colorama import Fore, Style, init
+BLOCKSIZE = 1048576 # or some other, desired size in bytes
 
 init()
 ourcolor = Fore.CYAN
@@ -38,10 +39,10 @@ def main():
         with open('words.txt','r') as wwf:
             word_dictonary_list = [line.rstrip('\n') for line in wwf]
 
-    try:
-        with open(main_config["input_file"],'r') as f:
+    if os.path.exists(main_config["input_file"]):
+        with codecs.open(main_config["input_file"],'r',"utf-8") as f:
             content_as_list = [line.rstrip('\n') for line in f]
-    except:
+    else:
         content_as_list = []
         print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.RED + f'input file: {str(main_config["input_file"])} not found!')
         time.sleep(3)
@@ -50,10 +51,10 @@ def main():
     for content_line_now in content_as_list:
         global_line_counter = global_line_counter + 1
 
-        percentage_now = int(global_line_counter) / int(len(content_as_list)) * 100
+        percentage_now = round(int(global_line_counter) / int(len(content_as_list)) * 100 , 2)
 
         if main_config["show_%"]:
-            print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[{str(global_line_counter)}/{str(len(content_as_list))}] {str(percentage_now)}%',end="\r")
+            print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[{str(global_line_counter)}/{str(len(content_as_list))}] {str(percentage_now)}%                 ',end="\r")
 
         time.sleep(main_config["artifical_delay"])
 
