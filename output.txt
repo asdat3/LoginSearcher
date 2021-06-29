@@ -1,0 +1,10 @@
+__**Keyword Result:**__
+**1:** hello @kyudev
+**2:** as said I am sending you my *login* for the server
+**3:** you should know the username
+**2:** as said I am sending you my login for the server
+**3:** you should know the *username*
+**4:** this is my password: Super!seC0r3_pW?
+**3:** you should know the username
+**4:** this is my *password*: Super!seC0r3_pW?
+**5:** please keep it save!
