@@ -46,14 +46,13 @@ def main():
         print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.RED + f'input file: {str(main_config["input_file"])} not found!')
         time.sleep(3)
 
-    print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[0/{str(len(content_as_list))}] 0%')
+    print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[0/{str(len(content_as_list))}] 0%',end="\r")
     for content_line_now in content_as_list:
         global_line_counter = global_line_counter + 1
 
         percentage_now = int(global_line_counter) / int(len(content_as_list)) * 100
-        if main_config["logging+"]:
-            print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[{str(global_line_counter)}/{str(len(content_as_list))}] {str(percentage_now)}%',end="\r")
-        elif main_config["show_%"]:
+
+        if main_config["show_%"]:
             print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.BLUE + f'[{str(global_line_counter)}/{str(len(content_as_list))}] {str(percentage_now)}%',end="\r")
 
         time.sleep(main_config["artifical_delay"])
@@ -65,19 +64,44 @@ def main():
             if main_config["keywordsearch"]:
                 for keyword_now in main_config["keywordlist"]:
                     if keyword_now in word_now:
+                        int_each_for_list = int(main_config["output"]["interesting_lines"] - 1) / 2
                         if main_config["logging+"]:
                             print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.WHITE + f'Keyword: {str(keyword_now)} found!')
                         if main_config["output"]["discord_format"]:
-                            kw_global_interesting_lines.append(f'**{str(global_line_counter-1)}:** ' + str(content_as_list[int(global_line_counter - 2)]).replace(str(keyword_now),'*'+str(keyword_now)+'*'))
-                            kw_global_interesting_lines.append(f'**{str(global_line_counter)}:** '   + str(content_as_list[global_line_counter - 1]).replace(str(keyword_now),'*'+str(keyword_now)+'*'))
-                            kw_global_interesting_lines.append(f'**{str(global_line_counter+1)}:** ' + str(content_as_list[global_line_counter]).replace(str(keyword_now),'*'+str(keyword_now)+'*'))
+                            kw_global_interesting_lines.append(f'**{str(global_line_counter)}:** '   + str(content_as_list[global_line_counter - 1]).replace(str(keyword_now),str(keyword_now)))
+
+                            for i_n in range(int(int_each_for_list)):
+                                kw_global_interesting_lines.append(f'**{str(global_line_counter-int(1 + i_n))}:** ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]).replace(str(keyword_now),str(keyword_now)))
+                                kw_global_interesting_lines.append(f'**{str(global_line_counter+int(1 + i_n))}:** ' + str(content_as_list[global_line_counter + int(i_n)]).replace(str(keyword_now),str(keyword_now)))
                         else:
-                            kw_global_interesting_lines.append(f'{str(global_line_counter-1)}: ' + str(content_as_list[int(global_line_counter - 2)]))
                             kw_global_interesting_lines.append(f'{str(global_line_counter)}: '   + str(content_as_list[global_line_counter - 1]))
-                            kw_global_interesting_lines.append(f'{str(global_line_counter+1)}: ' + str(content_as_list[global_line_counter]))
-                        kw_global_interesting_lines_raw.append(str(content_as_list[global_line_counter - 2]))
+
+                            for i_n in range(int(int_each_for_list)):
+                                kw_global_interesting_lines.append(f'{str(global_line_counter-int(1 + i_n))}: ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]))
+                                kw_global_interesting_lines.append(f'{str(global_line_counter+int(i_n + 1))}: ' + str(content_as_list[global_line_counter + int(i_n)]))
+
+                        kw_global_interesting_lines2 = []
+                        for ii in kw_global_interesting_lines:
+                            if ii not in kw_global_interesting_lines2:
+                                if ii.replace('*','') not in kw_global_interesting_lines2:
+                                    if f'*{ii}*' not in kw_global_interesting_lines2:
+                                        kw_global_interesting_lines2.append(ii)
+                        kw_global_interesting_lines = kw_global_interesting_lines2
+                        kw_global_interesting_lines.sort()
+
                         kw_global_interesting_lines_raw.append(str(content_as_list[global_line_counter - 1]))
-                        kw_global_interesting_lines_raw.append(str(content_as_list[global_line_counter]))
+                        for i_n in range(int(int_each_for_list)):
+                            content_now_dd = str(content_as_list[global_line_counter - int(1 + int(i_n) + 1)])
+                            kw_global_interesting_lines_raw.append(str(content_now_dd))
+                        for i_n in range(int(int_each_for_list)):
+                            content_now_dd = str(content_as_list[global_line_counter - int(i_n)])
+                            kw_global_interesting_lines_raw.append(str(content_now_dd))
+                        
+                        kw_global_interesting_lines_raw2 = []
+                        for ii in kw_global_interesting_lines_raw:
+                            if ii not in kw_global_interesting_lines_raw2:
+                                kw_global_interesting_lines_raw2.append(ii)
+                        kw_global_interesting_lines_raw = kw_global_interesting_lines_raw2
 
             #get all that might be
             if main_config["uregex"]["active"]:

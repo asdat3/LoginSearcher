@@ -2,7 +2,7 @@
     "input_file":"input.txt",
     "keywordsearch":true,
     "keywordlist":["password","pw","login","admin","username"],
-    "logging+":true,
+    "logging+":false,
     "show_%":true,
     "uregex":{
         "active":true,
@@ -13,7 +13,8 @@
     },
     "output":{
         "active":true,
-        "discord_format":true
+        "discord_format":true,
+        "interesting_lines":3
     },
     "artifical_delay":0.3
 }
