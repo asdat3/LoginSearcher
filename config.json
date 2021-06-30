@@ -16,5 +16,9 @@
         "discord_format":true,
         "interesting_lines":3
     },
+    "keywords_ignore":{
+        "line_max_letters":200,
+        "line_min_letters":9
+    },
     "artifical_delay":0
 }

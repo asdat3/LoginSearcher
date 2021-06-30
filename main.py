@@ -1,6 +1,8 @@
 import re, time, datetime, json, os, codecs
 from colorama import Fore, Style, init
 BLOCKSIZE = 1048576 # or some other, desired size in bytes
+emptychar_list = ['',' ','  ','\n','\t']
+
 
 init()
 ourcolor = Fore.CYAN
@@ -72,21 +74,26 @@ def main():
                             kw_global_interesting_lines.append(f'**{str(global_line_counter)}:** '   + str(content_as_list[global_line_counter - 1]).replace(str(keyword_now),str(keyword_now)))
 
                             for i_n in range(int(int_each_for_list)):
-                                kw_global_interesting_lines.append(f'**{str(global_line_counter-int(1 + i_n))}:** ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]).replace(str(keyword_now),str(keyword_now)))
-                                kw_global_interesting_lines.append(f'**{str(global_line_counter+int(1 + i_n))}:** ' + str(content_as_list[global_line_counter + int(i_n)]).replace(str(keyword_now),str(keyword_now)))
+                                if not str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]).replace(str(keyword_now),str(keyword_now)) in emptychar_list:
+                                    kw_global_interesting_lines.append(f'**{str(global_line_counter-int(1 + i_n))}:** ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]).replace(str(keyword_now),str(keyword_now)))
+                                if not str(content_as_list[global_line_counter + int(i_n)]).replace(str(keyword_now),str(keyword_now)) in emptychar_list:
+                                    kw_global_interesting_lines.append(f'**{str(global_line_counter+int(1 + i_n))}:** ' + str(content_as_list[global_line_counter + int(i_n)]).replace(str(keyword_now),str(keyword_now)))
                         else:
                             kw_global_interesting_lines.append(f'{str(global_line_counter)}: '   + str(content_as_list[global_line_counter - 1]))
 
                             for i_n in range(int(int_each_for_list)):
-                                kw_global_interesting_lines.append(f'{str(global_line_counter-int(1 + i_n))}: ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]))
-                                kw_global_interesting_lines.append(f'{str(global_line_counter+int(i_n + 1))}: ' + str(content_as_list[global_line_counter + int(i_n)]))
+                                if not str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]) in emptychar_list:
+                                    kw_global_interesting_lines.append(f'{str(global_line_counter-int(1 + i_n))}: ' + str(content_as_list[int(global_line_counter - int(1 + int(i_n) + 1))]))
+                                if not str(content_as_list[global_line_counter + int(i_n)]) in emptychar_list:
+                                    kw_global_interesting_lines.append(f'{str(global_line_counter+int(i_n + 1))}: ' + str(content_as_list[global_line_counter + int(i_n)]))
 
                         kw_global_interesting_lines2 = []
                         for ii in kw_global_interesting_lines:
                             if ii not in kw_global_interesting_lines2:
                                 if ii.replace('*','') not in kw_global_interesting_lines2:
                                     if f'*{ii}*' not in kw_global_interesting_lines2:
-                                        kw_global_interesting_lines2.append(ii)
+                                        if not ii in emptychar_list:
+                                            kw_global_interesting_lines2.append(ii)
                         kw_global_interesting_lines = kw_global_interesting_lines2
                         kw_global_interesting_lines.sort()
 
@@ -101,7 +108,8 @@ def main():
                         kw_global_interesting_lines_raw2 = []
                         for ii in kw_global_interesting_lines_raw:
                             if ii not in kw_global_interesting_lines_raw2:
-                                kw_global_interesting_lines_raw2.append(ii)
+                                if not ii in emptychar_list:
+                                    kw_global_interesting_lines_raw2.append(ii)
                         kw_global_interesting_lines_raw = kw_global_interesting_lines_raw2
 
             #get all that might be
@@ -120,18 +128,21 @@ def main():
                                 if main_config["logging+"]:
                                     print(Fore.WHITE + Style.BRIGHT + datetime.datetime.now().strftime("%H:%M:%S") + ourcolor + ' | ' + Fore.WHITE + f'Possible pw: {str(pw_var.group())} found!')
 
-            #output
-            if main_config["output"]["active"]:
-                with open('output.txt','w') as outf:
+    #output
+    if main_config["output"]["active"]:
+        with open('output.txt','w') as outf:
 
-                    #Keyword Result:
-                    if main_config["output"]["discord_format"]:
-                        outf.write('__**Keyword Result:**__\n')
-                    else:
-                        outf.write('Keyword Result:\n')
+            #Keyword Result:
+            if main_config["output"]["discord_format"]:
+                outf.write('__**Keyword Result:**__\n')
+            else:
+                outf.write('Keyword Result:\n')
 
-                    for kw_interesting_line_now in kw_global_interesting_lines:
-                        outf.write(str(kw_interesting_line_now)+'\n')
+            for kw_interesting_line_now in kw_global_interesting_lines:
+                if not kw_interesting_line_now in emptychar_list:
+                    if len(str(kw_interesting_line_now)) > int(main_config["keywords_ignore"]["line_min_letters"]):
+                        if len(str(kw_interesting_line_now)) < int(main_config["keywords_ignore"]["line_max_letters"]):
+                            outf.write(str(kw_interesting_line_now))
 
 banner()
 main()
